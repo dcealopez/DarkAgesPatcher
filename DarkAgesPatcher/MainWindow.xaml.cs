@@ -124,6 +124,19 @@ namespace DarkAgesPatcher
                 return;
             }
 
+            if (gameBuild.PatchGroupIds.Contains("__patched_exe__"))
+            {
+                MessageBox.Show("The selected game executable is already patched.",
+                    "Information",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                Dispatcher.Invoke(() => PatchButton.IsEnabled = true);
+                Dispatcher.Invoke(() => CheckUpdatesButton.IsEnabled = true);
+                Dispatcher.Invoke(() => PatcherStatus.Text = "Ready.");
+                return;
+            }
+
             // Back up the executable?
             var makeBackup = MessageBox.Show("Do you want to make a backup of the current game executable?",
                 "Backup",

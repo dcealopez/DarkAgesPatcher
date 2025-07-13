@@ -75,14 +75,14 @@ namespace DarkAgesPatcher
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine($"An error occured while checking for updates: {ex}");
-                    Application.Current.Shutdown(1);
+                    Application.Current.Shutdown(Util.BuildExitCode(1, 0, 0));
                     return;
                 }
 
                 // Stop here if no path was specified
                 if (string.IsNullOrEmpty(filePath))
                 {
-                    Application.Current.Shutdown(0);
+                    Application.Current.Shutdown(Util.BuildExitCode(2, 0, 0));
                     return;
                 }
 
@@ -96,7 +96,7 @@ namespace DarkAgesPatcher
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine($"An error occured while loading the patch definitions file: {ex}");
-                    Application.Current.Shutdown(1);
+                    Application.Current.Shutdown(Util.BuildExitCode(3, 0, 0));
                     return;
                 }
 
@@ -104,7 +104,7 @@ namespace DarkAgesPatcher
                 if (!Patcher.AnyPatchesLoaded())
                 {
                     Console.Out.WriteLine($"Unable to patch: 0 patches loaded");
-                    Application.Current.Shutdown(1);
+                    Application.Current.Shutdown(Util.BuildExitCode(0, 0, 0));
                     return;
                 }
 
@@ -119,7 +119,7 @@ namespace DarkAgesPatcher
                     if (gameBuild == null)
                     {
                         Console.Out.WriteLine($"Unable to apply patches: unsupported game build detected");
-                        Application.Current.Shutdown(1);
+                        Application.Current.Shutdown(Util.BuildExitCode(4, 0, 0));
                         return;
                     }
 
@@ -128,7 +128,14 @@ namespace DarkAgesPatcher
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine($"An error occured while checking the game build: {ex}");
-                    Application.Current.Shutdown(1);
+                    Application.Current.Shutdown(Util.BuildExitCode(5, 0, 0));
+                    return;
+                }
+
+                if (gameBuild.PatchGroupIds.Contains("__patched_exe__"))
+                {
+                    Console.Out.WriteLine($"The executable is already patched");
+                    Application.Current.Shutdown(Util.BuildExitCode(6, 0, 0));
                     return;
                 }
 
@@ -154,11 +161,11 @@ namespace DarkAgesPatcher
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine($"An error occured while patching the game executable: {ex}");
-                    Application.Current.Shutdown(1);
+                    Application.Current.Shutdown(Util.BuildExitCode(7, (byte)successes, (byte)(gameBuild.Patches.Count - successes)));
                     return;
                 }
 
-                Application.Current.Shutdown(successes == gameBuild.Patches.Count ? 0 : 1);
+                Application.Current.Shutdown(Util.BuildExitCode(0, (byte)successes, (byte)(gameBuild.Patches.Count - successes)));
             }
         }
 

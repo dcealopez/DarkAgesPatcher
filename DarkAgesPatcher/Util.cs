@@ -25,5 +25,10 @@ namespace DarkAgesPatcher
                 }
             }
         }
+
+        public static int BuildExitCode(short returnCode, byte appliedPatches, byte failedPatches)
+        {
+            return BitConverter.ToInt32(new byte[] { (byte)(returnCode & 255), (byte)(returnCode >> 8), appliedPatches, failedPatches }, 0);
+        }
     }
 }
