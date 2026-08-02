@@ -82,6 +82,7 @@ namespace DarkAgesPatcher
                 // Stop here if no path was specified
                 if (string.IsNullOrEmpty(filePath))
                 {
+                    Console.Error.WriteLine($"No executable to patch was given. Specify its path using the --patch <path> argument.");
                     Application.Current.Shutdown(Util.BuildExitCode(2, 0, 0));
                     return;
                 }
@@ -104,7 +105,7 @@ namespace DarkAgesPatcher
                 if (!Patcher.AnyPatchesLoaded())
                 {
                     Console.Out.WriteLine($"Unable to patch: 0 patches loaded");
-                    Application.Current.Shutdown(Util.BuildExitCode(0, 0, 0));
+                    Application.Current.Shutdown(Util.BuildExitCode(3, 0, 0));
                     return;
                 }
 

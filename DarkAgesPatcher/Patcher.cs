@@ -69,7 +69,7 @@ namespace DarkAgesPatcher
 
             using (var webClient = new WebClient())
             {
-                var latestPatchDefMd5Checksum = webClient.DownloadString($"http://{updateServerIp}/{PatchDefinitionsFileNameBase}_{GetPatcherVersion()}.md5");
+                var latestPatchDefMd5Checksum = webClient.DownloadString($"https://{updateServerIp}/{PatchDefinitionsFileNameBase}_{GetPatcherVersion()}.md5");
 
                 if (!currentPatchDefMd5Checksum.Equals(latestPatchDefMd5Checksum))
                 {
@@ -89,9 +89,9 @@ namespace DarkAgesPatcher
 
             using (var webClient = new WebClient())
             {
-                 webClient.DownloadFile(
-                     $"http://{updateServerIp}/{PatchDefinitionsFileNameBase}_{GetPatcherVersion()}.def",
-                     $"{PatchDefinitionsFileNameBase}.def");
+                webClient.DownloadFile(
+                    $"https://{updateServerIp}/{PatchDefinitionsFileNameBase}_{GetPatcherVersion()}.def",
+                    $"{PatchDefinitionsFileNameBase}.def");
             }
         }
 
@@ -102,7 +102,7 @@ namespace DarkAgesPatcher
         {
             if (!File.Exists($"{PatchDefinitionsFileNameBase}.def"))
             {
-                return;
+                throw new FileNotFoundException("Patch definitions file not found", $"{PatchDefinitionsFileNameBase}.def");
             }
 
             // Clear the currently loaded patches
